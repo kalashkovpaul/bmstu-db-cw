@@ -1,169 +1,555 @@
 \section{Конструкторская часть}
 
-В  данном  разделе  рассматриваются  реализуемые  алгоритмы  и  методы, приводится схема приложения и диаграмма классов.
+В  данном  разделе  рассматривается спроектированная база данных, соответствующая выбранной в  аналитической части СУБД, приводится диаграмма базы данных, рассматриваются сценарии создания таблиц БД и основные используемые паттерны проектирования.
 
-\subsection{Конструктивная блочная геометрия}
+\subsection{Таблицы БД}
 
-Рассмотрим функцию поля расстояния со знаком (SDF).
-Она может быть  использована  для  получения кратчайшего  расстояния  от  точки  до поверхности тела, причём если точка находится внутри тела, то на это должен 
-указывать  отрицательный  знак  результата.
-Рассмотрим  функцию  поля расстояния со знаком для сферы и куба.
+Для выделенных в аналитической части категорий данных и соответствующей им информации, приведённой в таблице~\ref{table:category-info}, база данных должна содержать следующие таблицы:
 
-Чтобы  вычислить  SDF  сферы,  нужно  знать  длину  радиуса  сферы  и 
-расстояние от центра сферы до заданной точки (см. формулу \ref{eq:l}): 
+\begin{itemize}[leftmargin=1.6\parindent]
+	\item[---] пациенты поликлиники --- patients;
+	\item[---] сотрудники поликлиники --- staff;
+	\item[---] должности в поликлинике --- posts;
+	\item[---] приёмы пациентов --- sessions;
+	\item[---] расписания --- schedules;
+	\item[---] медицинские карты пациентов --- records;
+	\item[---] состояния пациентов --- states;
+	\item[---] договоры с пациентами --- agreements;
+	\item[---] паспорты --- passports;
+	\item[---] доступы --- accesses;
+	\item[---] адреса --- addresses.
+\end{itemize}
 
-\begin{equation}
-	L(x, y, z) = \sqrt{(x - x_0)^2 + (y - y_0)^2 + (z - z_0)^2}
-	\label{eq:l}
-\end{equation}
-где $С(x_0, y_0, z_0)$ --- координаты центра сферы, $p(x, y, z)$ --- рассматриваемая точка.
+Используя знания о выбранной СУБД (PostgreSQL) и приведённую на рисунке~\ref{fig:er} диаграмму сущность-связь, определим для каждой из перечисленных выше таблиц столбцы, их типы и ограничения, в таблицах~\ref{table:patients-columns}~--~\ref{table:addresses-columns}.
 
-Получим SDF сферы:
-\begin{equation}
-	dist = L(x, y, z) - r
-	\label{eq:sdf_sphere}
-\end{equation}
+Определим пользоательские типы данных для дня недели, пола и уровня доступа в листинге~\ref{code:usertypes}.
 
-В случае куба необходимо учесть случаи расположения точки относительно грани.
-\begin{equation}
-	q = \left| p \right| - r
-	\label{eq:q}
-\end{equation}
-\begin{equation}
-	dist = L(max(q, 0)) + min(max(q_x, max(q_y, q_z)), 0)
-	\label{eq:q}
-\end{equation}
-где $p(x, y, z)$ --- рассматриваемая точка, $q(x, y, z)$ --- координаты точки за вычетом радиуса, $dist$ --- искомое расстояние с учётом двух расположений точки относительно граней и угла.
 
-Функция поля расстояния со знаком позволяет эффективно использовать алгоритм  марширования  лучей,  поскольку  позволяет  двигаться  к рассматриваемому  объекту  с  максимальным  шагом  так,  что  не  придётся 
-пропускать лицевую грань объекта.
 
-Стоит  отметить,  что  SDF  можно  использовать  в  случае  с  CSG  для 
-выполнения композиции объектов.
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы пациентов поликлиники}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		patient\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID пациента \\
+		\hline
+		address\_id & INT & \makecell{NOT NULL, \\ FOREIGH KEY} & ID  адреса \\
+		\hline
+		passport & INT & \makecell{NOT NULL, \\ FOREIGH KEY} & ID паспорта \\
+		\hline
+		phone & VARCHAR(10) & NOT NULL & Номер телефона \\
+		\hline
+		home\_phone & VARCHAR(10) & --- & Домаший номер телефона \\
+		\hline
+		email & VARCHAR(20) & --- & Адрес электронной почты \\
+		\hline
+	\end{tabular}
+	\label{table:patients-columns}
+\end{center}
+\end{table}
 
-При пересечении двух тел луч должен пересечься с тем телом, которое 
-дальше от камеры, следовательно, необходимо выбрать SDF с максимальным 
-значением:
-\begin{equation}
-	intersection(sdf1, sdf2) = max(sdf1, sdf2)
-	\label{eq:intersection}
-\end{equation}
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы сотрудников поликлиники}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		staff\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID сотрудника \\
+		\hline
+		passport & INT & \makecell{NOT NULL, \\ FOREIGH KEY} & ID паспорта \\
+		\hline
+		post & INT &  \makecell{NOT NULL, \\ FOREIGH KEY} & ID должности \\
+		\hline
+		employment\_date & DATE & NOT NULL& Дата наёма \\
+		\hline
+		dismissal\_date & DATE & --- & Дата увольнения\\
+		\hline
+	\end{tabular}
+	\label{table:staff-columns}
+\end{center}
+\end{table}
 
-При объединении двух тел луч должен пересечься с ближайшим телом, 
-поэтому нужно выбрать SDF с минимальным значение:
-\begin{equation}
-	union(sdf1, sdf2) = min(sdf1, sdf2)
-	\label{eq:union}
-\end{equation}
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы должностей в поликлинике}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		post\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID должности \\
+		\hline
+		title & VARCHAR(30) & NOT NULL & Название должности \\
+		\hline
+		salary & INT & NOT NULL & Зарплата \\
+		\hline
+	\end{tabular}
+	\label{table:posts-columns}
+\end{center}
+\end{table}
 
-Поскольку в CSG используется операция разности, то имеет  значение и 
-порядок параметров (поскольку операция разности некоммутативна).
-В случае операции  разности  необходимо  определить  порядок  операндов  и  найти минимальное расстояние между первым и вторым телом.
-Расстояние до второго тела  возьмётся  с  отрицательным  знаком.
-Будем  считать,  что  луч  должен пересечься с первым телом и не пересечься со вторым телом.
-В таком случае второе тело можно представить как всё пространство за пределами второго тела 
-посредством операции инвертирования:
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы приёмов пациентов}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		session\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID приёма \\
+		\hline
+		doctor\_id & INT & \makecell{NOT NULL, \\ FOREIGH KEY} & ID принимающего врача \\
+		\hline
+		patient\_id & INT &  \makecell{NOT NULL, \\ FOREIGH KEY} & ID пациента \\
+		\hline
+		record\_id &  INT &  \makecell{NOT NULL, \\ FOREIGH KEY} & ID медицинской карты \\
+		\hline
+		state\_id &  INT &  \makecell{NOT NULL, \\ FOREIGH KEY} & ID состояния\\
+		\hline
+		session\_date & DATE & --- & Дата приёма\\
+		\hline
+		dynamics & VARCHAR(256) & --- & Динамика состояния \\
+		\hline
+		prescription & VARCHAR(256) & --- & Назначение \\
+		\hline
+		note & VARCHAR(256) & --- & Примечание \\
+		\hline
+	\end{tabular}
+	\label{table:sessions-columns}
+\end{center}
+\end{table}
 
-\begin{equation}
-	invert(sdf, x, y, z) = -sdf(x, y, z)
-	\label{eq:invert}
-\end{equation}
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы расписаний}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		schedule\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID расписания \\
+		\hline
+		staff\_id & INT & \makecell{NOT NULL, \\ FOREIGH KEY} & ID сотрудника \\
+		\hline
+		workstart & TIMESTAMP & NOT NULL & Дата начала работы\\
+		\hline
+		workend & TIMESTAMP & NOT NULL & Дата окончания работы \\
+		\hline
+		week\_day & week\_day\_t & NOT NULL & День недели \\
+		\hline
+		office & INT  & --- & Кабинет \\
+		\hline
+	\end{tabular}
+	\label{table:schedules-columns}
+\end{center}
+\end{table}
 
-После этого можно получить результат разности, применив пересечение 
-первого тела и инвертированного второго:
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы медицинских карт пациентов}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		record\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID мед. карты \\
+		\hline
+		agreement\_id & INT & NOT NULL & ID договора \\
+		\hline
+		registration\_date & DATE & NOT NULL & Дата постановки на учёт\\
+		\hline
+	\end{tabular}
+	\label{table:records-columns}
+\end{center}
+\end{table}
 
-\begin{equation}
-	\begin{split}
-	diff(sdf1, sdf2, x, y, z) &= union(sdf1(x, y, z), invert(sdf2(x, y, z))) \\
-	&= min(sdf1(x, y, z), -sdf2(x, y, z))
-	\label{eq:diff}
-	\end{split}
-\end{equation}
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы состояний пациентов}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		state\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID состояния \\
+		\hline
+		general\_condition & VARCHAR(256) & --- & Общее состояние \\
+		\hline
+		height & INT &  --- & Рост пациента, см\\
+		\hline
+		patient\_weight &  INT &  --- & Вес пациента, кг\\
+		\hline
+		pulse & INT & --- & \makecell{Частота пульса \\в минуту}\\
+		\hline
+		pressure & VARCHAR(50) & --- & \makecell{Артериальное \\давление }\\
+		\hline
+		temperature & REAL & --- & \makecell{Температура, \\градусы Цельсия} \\
+		\hline
+		other & VARCHAR(256) & --- & Прочее \\
+		\hline
+	\end{tabular}
+	\label{table:states-columns}
+\end{center}
+\end{table}
 
-\subsection{Марширование лучей}
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы договоров}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		agreement\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID договора \\
+		\hline
+		patient\_id & SERIAL & \makecell{NOT NULL, \\ FOREIGN KEY} & ID пациента \\
+		\hline
+		code & VARCHAR(50) & NOT NULL & Номер договора \\
+		\hline
+		conclusion\_date & DATE & NOT NULL & \makecell{Дата заключения \\договора}\\
+		\hline
+		expiration\_date & DATE & NOT NULL & \makecell{Дата окончания\\договора} \\
+		\hline
+		renewal\_date & DATE & NOT NULL & \makecell{Дата обновления \\договора} \\
+		\hline
+	\end{tabular}
+	\label{table:argreements-columns}
+\end{center}
+\end{table}
 
-Алгоритм бросания лучей отрисовывает объекты, полагаясь на SDF (см. 
-предыдущий пункт). 
-Маршировка лучей состоит в итерационном перемещении точки  вдоль  луча  обзора  и  проверки  результата:  в  случае  отрицательного 
-результата произошло столкновение с объектом.
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы адресов}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		address\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID адреса \\
+		\hline
+		country & VARCHAR(50) & NOT NULL & Страна \\
+		\hline
+		city & VARCHAR(50) & NOT NULL & Город \\
+		\hline
+		street & VARCHAR(50) & NOT NULL & Улица \\
+		\hline
+		house & VARCHAR(50) & NOT NULL & Дом \\
+		\hline
+		flat & VARCHAR(50) & --- & Квартира \\
+		\hline
+	\end{tabular}
+	\label{table:addresses-columns}
+\end{center}
+\end{table}
 
-Также  алгоритм марширования лучей  должен  использовать  границы  сцены, 
-которые  должны  быть  определены  и  переданы  в  качестве  входных  данных.
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы паспортов}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		passport\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID паспорта \\
+		\hline
+		surname & VARCHAR(50) & NOT NULL & Фамилия \\
+		\hline
+		middlename & VARCHAR(50) & NOT NULL & Имя \\
+		\hline
+		lastname & VARCHAR(50) & --- & Отчество \\
+		\hline
+		birth\_date & DATE & NOT NULL & Дата рождения\\
+		\hline
+		gender & gender\_t & NOT NULL & Пол \\
+		\hline
+		series & VARCHAR(10) & NOT NULL & Серия \\
+		\hline
+		num & VARCHAR(10) & NOT NULL & Номер \\
+		\hline
+		issue\_date & DATE & NOT NULL & Дата выдачи\\
+		\hline
+		issue\_location & VARCHAR(128) & NOT NULL & Место выдачи \\
+		\hline
+	\end{tabular}
+	\label{table:passports-columns}
+\end{center}
+\end{table}
 
-Алгоритм марширования лучей представлен на псевдокоде \ref{psevdo:raymarch}.
-\begin{algorithm}
-	\caption{Алгоритм маршировки лучей}\label{psevdo:raymarch}
-	\begin{algorithmic}[1]
-		\Function{rayMarch}{start, end}
-		\State $depth$ $\leftarrow$ $start$
-		\State $i$ $\leftarrow$ $0$
-		\While {$i < MAX\_STEPS$}
-		\State $dist$ $\leftarrow$ расстояние до объекта
-		\If {внутри объекта}
-		\State \Return $depth$
-		\EndIf
-		\State $depth += dist$
-		\State $i += 1$
-		\If {луч вышел за пределы сцены}
-		\State \Return $end$
-		\EndIf
-		\EndWhile
-		\State \Return $end$
-		\EndFunction
-	\end{algorithmic}
-\end{algorithm}
+\begin{table}[h!]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация о столбцах таблицы доступов}
+	\begin{tabular}{| c | c | c | c |}
+		\hline
+		Столбец & Тип данных & Ограничения & Значение \\
+		\hline
+		access\_id & SERIAL & \makecell{NOT NULL, \\ PRIMARY KEY} & ID доступов \\
+		\hline
+		staff\_id & INT &  \makecell{NOT NULL, \\ FOREIGN KEY} & ID сотрудника \\
+		\hline
+		username & VARCHAR(50) & NOT NULL & Логин \\
+		\hline
+		passwordhash & BYTEA  & NOT NULL & Хэш пароля \\
+		\hline
+		access\_level & access\_level\_t & NOT NULL & Уровень доступа \\
+		\hline
+	\end{tabular}
+	\label{table:accesses-columns}
+\end{center}
+\end{table}
 
-\subsection{Схема приложения и диаграмма классов}
-
-Приложение строится из частей, приведённых на рисунке \ref{fig:app}.
 \clearpage
 
-\begin{figure}[h]
-	\centering
+\begin{code}
 	\captionsetup{justification=centering}
-	\includegraphics[width=160mm]{img/app.png}
-	\caption{Схема приложения}
-	\label{fig:app}
-\end{figure}
+	\captionof{listing}{Определение пользовательских типов данных}
+	\label{code:usertypes}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/usertypes.sql}
+\end{code}
 
-На  данной  схеме  представлена  функциональная  структура  приложения.
-Используя  графический  интерфейс,  пользователь  сможет  задать  примитивы, 
-положение  камеры,  а  также  используемые  операции  композиции.
-Этап моделирования  объектов  представлен  на  рисунке  \ref{fig:modeling}.
-После  него  следует рендер  итогового  изображения  с  использованием  камеры  и  освещения, полученных благодаря вершинному и фрагментному шейдерам.
+\subsubsection{Создание таблиц и ограничений}
 
-\begin{figure}[h]
-	\centering
+Результат переноса приведённых выше таблиц в скрипты создания страниц, написанных на SQL, можно увидеть на листингах~\ref{code:createtables1} -- \ref{code:createtables5}.
+
+\begin{code}
 	\captionsetup{justification=centering}
-	\includegraphics[width=160mm]{img/modeling.png}
-	\caption{Диаграмма классов этапа моделирования объектов}
-	\label{fig:modeling}
-\end{figure}
+	\captionof{listing}{Создание таблиц (часть 1)}
+	\label{code:createtables1}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/createtables1.sql}
+\end{code}
+
 \clearpage
 
-Поскольку  в  технологии  конструктивной  блочной  геометрии 
-используется дерево построений, то в приложении данное дерево представлено 
-как двоичное дерево, элементами которого являются объекты класса \textit{BaseNode}, которыми могут быть элементы трансформации, композиции или примитивы --- соответственно, классы \textit{BaseTransformation}, \textit{BaseComposition} и \textit{BasePrimitive}.
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание таблиц (часть 2)}
+	\label{code:createtables2}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/createtables2.sql}
+\end{code}
 
-Класс  \textit{BaseTransformation} используется  для  преобразования  объекта 
-модели  и  содержит  в  себе  необходимые  для  выполнения  операции 
-(перемещения, поворота или масштабирования) координаты.
-У него есть метод \textit{configure}, который производит настройку экземпляра класса в соответствии с переданным объектом.
+\clearpage
 
-Класс  \textit{BaseComposition} используется  для  выполнения  операций композиции (пересечения, объединения и вычитания).
-Он представляет собой дерево (построений), результатом обхода которого является итоговая модель.
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание таблиц (часть 3)}
+	\label{code:createtables3}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/createtables3.sql}
+\end{code}
 
-Класс  \textit{BasePrimitive}  предназначен  для  создания  объектов  модели, 
-построение и обработка которых будет осуществляться.
+\clearpage
 
-Также  имеется  класс  \textit{NodeVisitor},  реализующий  паттерн  поведения 
-«Посетитель», который необходим для добавления нового функционала классам.
-Применение данного паттерна помогает абстрагироваться от реализации класса 
-\textit{BaseNode} и  предоставить  обход  узлов  дерева  посетителю,  который  будет обходить  узлы  при  помощи  методов  \textit{visitTransformation}, \textit{visitComposition} и \newline \textit{visitPrimitive}.
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание таблиц (часть 4)}
+	\label{code:createtables4}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/createtables4.sql}
+\end{code}
+
+\clearpage
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание таблиц (часть 5)}
+	\label{code:createtables5}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/createtables5.sql}
+\end{code}
+
+Также в созданные с применением перечисленных скриптов таблицы необходимо добавить ограничения.
+Это можно сделать при помощи скрипта, приведённого на листингах~\ref{code:constraints1} --~\ref{code:constraints3}.
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание ограничений для созданных таблиц (часть 1)}
+	\label{code:constraints1}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/constraints1.sql}
+\end{code}
+
+\clearpage
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание ограничений для созданных таблиц (часть 2)}
+	\label{code:constraints2}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/constraints2.sql}
+\end{code}
+
+\clearpage
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание ограничений для созданных таблиц (часть 3)}
+	\label{code:constraints3}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/constraints3.sql}
+\end{code}
+
+\subsubsection{Диаграмма базы данных}
+
+По полученным выше таблицам, отображающим свойства столбцов таблиц базы данных, построим диаграмму базы данных (\textit{англ. database schema}) при помощи языка разметки баз данных (\textit{англ.} Database Markup Language, DML), предназначенного для представления данных и информации о таблицах, взятых из реляционной базы данных,
+
+Диаграмма базы данных для поставленной задачи отображена на рисунке~\ref{fig:dbdiagram}.
+
+\begin{figure}[h!]
+	\centering
+	\captionsetup{justification=centering}
+	\includegraphics[width=170mm]{dbdiagram.png}
+	\caption{Диаграмма базы данных для поставленной задачи}
+	\label{fig:dbdiagram}
+\end{figure}
+
+\subsection{Основные паттерны проектирования}
+
+В данной работе будут использованы два паттерна, рассмотренные ниже --- архитектурный паттерн MVC и паттерн проектирования REST.
+
+\subsubsection{МVC}
+
+MVC (\textit{англ.} Model View Controller)~\cite{mvc} --- архитектурный паттерн, в основе которого лежат  три понятия: модель, представление и контроллер.
+
+Модель содержит всё информацию состояния, данные и логику приложения, необходимую для ведения базы данных.
+Она представляет собой интерфейс для получения и изменения состояния, а также может отправлять оповещения об изменениях состояния наблюдателем, 
+
+Представление определяет собой отображение модели, и, как правило, получает состояние и данные для отображения непосредственно от модели. 
+
+Контроллер получает данные, вводимые пользователем, определяет их смысл для модели, выполняет операции с моделью и управляет её бизнес-логикой, связывая с представлением.
+
+Упрощённо можно привести следующие этапы работы приложения, к которым может привести взаимодействие с пользователем:
+\begin{enumerate}[label=\arabic*)]
+	\item пользователь взаимодействует с моделью: представление сообщает контроллеру о том, какая была выполнена операция, контроллер должен обработать это действие;
+	\item контроллер обращается к модели с запросами об изменении состояния: контроллер должен интерпретировать действия пользователя и выполнить необходимые операции с моделью;
+	\item котроллер обращается к представлению с запросом об изменении: когда контроллер получает действие от представления, он может в результате его обработки обратиться к представлению с некоторым запросом на изменение (например, заблокировать некоторые кнопки в интерфейсе);
+	\item модель оповещает представление об изменении состояния (вследствие действий пользователя состояние модели может измениться, о чём модель может уведомить представление);
+	\item представление заправшивает у модели информацию состояния: для корректного отображения данных представление может заправшивать текущее состояние (за которое отвечает модель).
+\end{enumerate}
+
+\subsubsection{REST}
+
+REST (\textit{англ.} Representational State Transfer, передача репрезентативного состояния) --- паттерн проектирования, в основе которого лежит понятие ресурса и его состояния. 
+Каждый ресурс имеет URI (unified resourse identifier), универсальный идентификатор, который позволяет совершать различные действия над данным ресурсом, например, операции создания, чтения, обновления и удаления (CRUD --- create, read, update, delete).
+
+Архитектура REST поддерживает выбранную модель клиент-сервер, причём не требует от сервера хранения какой-либо информации о состоянии клиента в периодах между запросами (всю необходимую для выполения операции информацию клиент передаёт во время запроса).
+Поддерживается возможность кэширования ответов сервера на клиенте с целью ускорения быстродействия программы клиента, что помогает уменьшить нагрузку на клиентских машинах.
+
+При этом программный интерфейс приложения (\textit{англ.} API, application \linebreak programming interface), которым пользуется клиент для осуществления запросов на сервер, может быть унифицирован.
+В этом случае стараются придерживаться трёх основных принципов:
+\begin{enumerate}[label=\arabic*)]
+	\item однозначное идентифицирование ресурсов в запросе;
+	\item использование представления для взаимодействия с ресурсами (представление определяет текущее или желаемое состояние ресурса);
+	\item достаточное количество информации в каждом запросе: каждый отдельно взятый запрос содержит информацию, однозрачно определяющее то, как необходимо обрабатывать и идентифицировать данный запрос.
+\end{enumerate}
 
 \subsection*{Вывод}
 
-В данном разделе были рассмотрены методы и алгоритмы, необходимые 
-для понимания и создания приложения, а также приведены схема приложения и 
-диаграмма классов для этапа моделирования объектов.
-\pagebreak
+В данном разделе  была рассмотрена спроектированная база данных, соответствующая выбранной в  аналитической части СУБД, приведена диаграмма базы данных, рассмотрены сценарии создания таблиц БД и основные используемые паттерны проектирования: MVC и REST.
+
