@@ -1,0 +1,46 @@
+{
+  "name": "bmstu-ppo",
+  "version": "1.0.0",
+  "description": "BMSTU Software Design course, VI term, 2023",
+  "main": "index.js",
+  "dependencies": {
+    "@types/uuid": "^9.0.1",
+    "babel-jest": "^29.5.0",
+    "fastify": "^4.15.0",
+    "fs": "0.0.1-security",
+    "isomorphic-fetch": "^3.0.0",
+    "pg-promise": "^11.4.3",
+    "readline-sync": "^1.4.10",
+    "ts-node": "^10.9.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-typescript": "^7.21.4",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "@types/readline-sync": "^1.4.4",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4"
+  },
+  "scripts": {
+    "start": "npm run compile && node ./dist/index.js",
+    "build": "npx tsc -p tsconfig.build.json",
+    "compile": "npx tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalashkovpaul/bmstu-sd.git"
+  },
+  "author": "Kalashkov Paul",
+  "type": "commonjs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kalashkovpaul/bmstu-sd/issues"
+  },
+  "homepage": "https://github.com/kalashkovpaul/bmstu-sd#readme"
+}
