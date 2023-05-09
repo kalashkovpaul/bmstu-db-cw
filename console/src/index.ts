@@ -70,12 +70,16 @@ const updateStaff = JSON.stringify({
 });
 
 export async function checkAuthHandler() {
-    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.fullStaffInfo}`;
+    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.systemUsersList}`;
     try {
         const response = await fetch(checkRightsUrl, {
             method: "GET",
             mode: 'no-cors',
             // body: JSON.stringify({
+            //     access_id: 2,
+            //     // username: "biba",
+            //     // password: "biba",
+            //     // access_level: "admin",
             // }),
         });
         console.log(response);

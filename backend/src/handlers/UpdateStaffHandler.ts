@@ -8,26 +8,26 @@ import IHandler from "./IHandler";
 class UpdateStaffHandler implements IHandler {
     async request(request: any, reply: any) {
         reply.headers('Content-Type', "application/json");
-        // let key = request.headers["Authorization"];
-        // if (!key) {
-        //     logger.error(`key: ${key}`);
-        //     reply.code(statuses.UNAUTHORIZED);
-        //     return;
-        // }
-        // const explicityKey = "Explicit: ";
-        // const index = key.indexOf(explicityKey);
-        // if (index === -1) {
-        //     logger.error(`index: ${index}, key: ${key}`);
-        //     reply.code(statuses.UNAUTHORIZED);
-        //     return;
-        // }
-        // key = key.slice(explicityKey.length);
-        // const staffId = keyChecker.getOwner(key);
-        // if (staffId === -1) {
-        //     logger.error(`staffId: ${staffId}, key: ${key}`);
-        //     reply.code(statuses.UNAUTHORIZED);
-        //     return;
-        // }
+        let key = request.headers["Authorization"];
+        if (!key) {
+            logger.error(`key: ${key}`);
+            reply.code(statuses.UNAUTHORIZED);
+            return;
+        }
+        const explicityKey = "Explicit: ";
+        const index = key.indexOf(explicityKey);
+        if (index === -1) {
+            logger.error(`index: ${index}, key: ${key}`);
+            reply.code(statuses.UNAUTHORIZED);
+            return;
+        }
+        key = key.slice(explicityKey.length);
+        const staffId = keyChecker.getOwner(key);
+        if (staffId === -1) {
+            logger.error(`staffId: ${staffId}, key: ${key}`);
+            reply.code(statuses.UNAUTHORIZED);
+            return;
+        }
 
         if (!this.checkData(request.body)) {
             logger.error(`body: ${request.body}`);
@@ -51,7 +51,7 @@ class UpdateStaffHandler implements IHandler {
         }
     }
 
-    async updatePassport(jsonData: string): Promise<boolean> {
+    private async updatePassport(jsonData: string): Promise<boolean> {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
         const data = JSON.parse(jsonData);
@@ -143,7 +143,6 @@ class UpdateStaffHandler implements IHandler {
                 scheduleFields.forEach(field => {
                     state = state && (sched[field] !== undefined);
                     if (!state) {
-                        console.log(field);
                         return false;
                     }
                 });

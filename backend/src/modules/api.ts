@@ -10,6 +10,11 @@ import { addStaffHandler } from '../handlers/AddStaffHandler';
 import { updateStaffHandler } from '../handlers/UpdateStaffHandler';
 import { staffShortInfoHandler } from '../handlers/StaffShortInfoHandler';
 import { staffFullInfoHandler } from '../handlers/StaffFullInfoHandler';
+import { dismissStaffHandler } from '../handlers/DismissStaffHandler';
+import { addUserHandler } from '../handlers/AddUserHandler';
+import { updateUserHandler } from '../handlers/UpdateUserHandler';
+import { deleteUserHandler } from '../handlers/DeleteUserHandler';
+import { userShortInfoHandler } from '../handlers/UserShortInfoHandler';
 
 export class API {
     private api: FastifyInstance;
@@ -28,6 +33,11 @@ export class API {
         this.api.put(apiConfig.updateStaff, updateStaffHandler.request.bind(updateStaffHandler));
         this.api.get(apiConfig.staffShort, staffShortInfoHandler.request.bind(staffShortInfoHandler));
         this.api.get(apiConfig.fullStaffInfo, staffFullInfoHandler.request.bind(staffFullInfoHandler));
+        this.api.post(apiConfig.dismissStaff, dismissStaffHandler.request.bind(dismissStaffHandler));
+        this.api.post(apiConfig.addUser, addUserHandler.request.bind(addUserHandler));
+        this.api.post(apiConfig.updateUser, updateUserHandler.request.bind(updateUserHandler));
+        this.api.post(apiConfig.deleteUser, deleteUserHandler.request.bind(deleteUserHandler));
+        this.api.get(apiConfig.systemUsersList, userShortInfoHandler.request.bind(userShortInfoHandler));
     }
 
     startServer = async () => {

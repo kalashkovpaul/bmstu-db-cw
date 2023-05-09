@@ -31,6 +31,11 @@ export const apiConfig = {
     updateStaff: "/staff/update",
     staffShort: "/staff/all/short",
     fullStaffInfo: "/staff/all/full",
+    dismissStaff: "/staff/dismiss",
+    addUser: "/users/add",
+    updateUser: "/users/update",
+    deleteUser: "/users/delete",
+    systemUsersList: "/users/all/short",
 }
 
 export const statuses = {

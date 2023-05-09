@@ -11,14 +11,14 @@ export const apiConfig = {
     updateStaff: "/staff/update", // DONE
     staffShort: "/staff/all/short", // DONE
     fullStaffInfo: "/staff/all/full", // DONE
-    dismissStaff: "/staff/dismiss",
+    dismissStaff: "/staff/dismiss", // DONE
+    addUser: "/users/add", // DONE
+    updateUser: "/users/update", // DONE
+    deleteUser: "/users/delete", // DONE
+    systemUsersList: "/users/all/short", // DONE
     postSchedule: "/schedule",
     newRecord: "/records/new",
     currentRecords: "/records/current",
-    systemUsersList: "/users/all/short",
-    deleteUser: "/users/delete",
-    addUser: "/users/add",
-    updateUser: "/users/update",
     photoHandler: "/image",
     allSchedules: "/schedules/all",
     shortRecords: "/records/all/short",
