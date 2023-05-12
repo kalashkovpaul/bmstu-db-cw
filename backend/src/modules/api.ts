@@ -15,6 +15,12 @@ import { addUserHandler } from '../handlers/AddUserHandler';
 import { updateUserHandler } from '../handlers/UpdateUserHandler';
 import { deleteUserHandler } from '../handlers/DeleteUserHandler';
 import { userShortInfoHandler } from '../handlers/UserShortInfoHandler';
+import { scheduleHandler } from '../handlers/ScheduleHandler';
+import { allScheduleHandler } from '../handlers/AllScheduleHandler';
+import { newRecordHandler } from '../handlers/NewRecordHandler';
+import { currentRecordHandler } from '../handlers/CurrentRecordHandler';
+import { recordShortInfoHandler } from '../handlers/RecordShortInfoHandler';
+import { recordFullInfoHandler } from '../handlers/RecordFullInfoHandler';
 
 export class API {
     private api: FastifyInstance;
@@ -38,6 +44,12 @@ export class API {
         this.api.post(apiConfig.updateUser, updateUserHandler.request.bind(updateUserHandler));
         this.api.post(apiConfig.deleteUser, deleteUserHandler.request.bind(deleteUserHandler));
         this.api.get(apiConfig.systemUsersList, userShortInfoHandler.request.bind(userShortInfoHandler));
+        this.api.post(apiConfig.postSchedule, scheduleHandler.request.bind(scheduleHandler));
+        this.api.get(apiConfig.allSchedules, allScheduleHandler.request.bind(allScheduleHandler));
+        this.api.post(apiConfig.newRecord, newRecordHandler.request.bind(newRecordHandler));
+        this.api.post(apiConfig.currentRecords, currentRecordHandler.request.bind(currentRecordHandler));
+        this.api.get(apiConfig.shortRecords, recordShortInfoHandler.request.bind(recordShortInfoHandler));
+        this.api.post(apiConfig.recordFull, recordFullInfoHandler.request.bind(recordFullInfoHandler));
     }
 
     startServer = async () => {

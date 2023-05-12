@@ -36,6 +36,12 @@ export const apiConfig = {
     updateUser: "/users/update",
     deleteUser: "/users/delete",
     systemUsersList: "/users/all/short",
+    postSchedule: "/schedule",
+    allSchedules: "/schedules/all",
+    newRecord: "/records/new",
+    currentRecords: "/records/current",
+    shortRecords: "/records/all/short",
+    recordFull: "/record/full",
 }
 
 export const statuses = {

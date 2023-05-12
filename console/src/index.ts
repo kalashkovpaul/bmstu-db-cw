@@ -69,18 +69,34 @@ const updateStaff = JSON.stringify({
     // issue_location: "BMSTU",
 });
 
+const newRecord = JSON.stringify({
+    doctor_id: 1,
+    patient_id: 1,
+    record_id: 1,
+    session_date: '2023-05-11',
+    dynamics: "Well, he's better",
+    prescription: "Live on",
+    note: "",
+    state: {
+        general_condition: "Normal",
+        height: 180,
+        patient_weight: 80,
+        pulse:  60,
+        pressure: "120/80",
+        temperature: 36,
+        other: "",
+    }
+});
+
 export async function checkAuthHandler() {
-    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.systemUsersList}`;
+    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.recordFull}`;
     try {
         const response = await fetch(checkRightsUrl, {
-            method: "GET",
+            method: "POST",
             mode: 'no-cors',
-            // body: JSON.stringify({
-            //     access_id: 2,
-            //     // username: "biba",
-            //     // password: "biba",
-            //     // access_level: "admin",
-            // }),
+            body: JSON.stringify({
+                record_id: 1
+            }),
         });
         console.log(response);
         const result = await response.json();

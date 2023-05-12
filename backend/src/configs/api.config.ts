@@ -16,12 +16,12 @@ export const apiConfig = {
     updateUser: "/users/update", // DONE
     deleteUser: "/users/delete", // DONE
     systemUsersList: "/users/all/short", // DONE
-    postSchedule: "/schedule",
-    newRecord: "/records/new",
-    currentRecords: "/records/current",
+    postSchedule: "/schedule", // DONE
+    allSchedules: "/schedules/all", // DONE
+    newRecord: "/records/new", // DONE
+    currentRecords: "/records/current", // DONE
+    shortRecords: "/records/all/short", // DONE
+    recordFull: "/record/full", // DONE
     photoHandler: "/image",
-    allSchedules: "/schedules/all",
-    shortRecords: "/records/all/short",
-    recordFull: "/record/full",
     agreement: "/agreement",
 }

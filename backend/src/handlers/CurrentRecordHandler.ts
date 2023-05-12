@@ -5,7 +5,7 @@ import { keyChecker } from "../modules/KeyChecker";
 import { v4 as uuidv4 } from 'uuid';
 import IHandler from "./IHandler";
 
-class UpdateUserHandler implements IHandler{
+class CurrentRecordHandler implements IHandler{
     async request(request: any, reply: any) {
         reply.headers('Content-Type', "application/json");
         let key = request.headers["Authorization"];
@@ -40,10 +40,10 @@ class UpdateUserHandler implements IHandler{
             reply.code(statuses.INVALID_ARGS);
         }
         const result = await this.postRequest(request.body);
-        if (!result) {
+        if (!result.length) {
             reply.code(statuses.SERVER_ERROR);
         } else {
-            reply.code(statuses.SUCCESS);
+            reply.code(statuses.SUCCESS).send(JSON.stringify(result));
         }
     }
 
@@ -51,29 +51,13 @@ class UpdateUserHandler implements IHandler{
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
-        let result = false;
+        let result: any = {};
         try {
-            await connection.tx(async (t: any) => {
-                let text = 'UPDATE accesses SET';
-                if (data['username']) {
-                    text += ` username='${data.username}',`
-                }
-                if (data['password']) {
-                    text += ` passwordhash='${data.password}',`
-                }
-                if (data['access_level']) {
-                    text += ` access_level='${data.access_level}'`
-                }
-                if (text.charAt(text.length - 1) === ',') {
-                    text = text.slice(0, -1) + ' '
-                }
-                text += ' WHERE access_id=$1';
-                await t.none({
-                    text: text,
-                    values: [data.access_id],
+            const response = await connection.many({
+                    text: 'SELECT pas.surname, pas.middlename FROM records r JOIN agreements a ON r.agreement_id=a.agreement_id JOIN patients p ON a.patient_id=p.patient_id JOIN passports pas ON p.passport=pas.passport_id WHERE r.next_date=$1',
+                    values: [data.date],
                 });
-            });
-            result = true;
+            result = response;
         } catch (e) {
             logger.error(e);
         }
@@ -83,11 +67,16 @@ class UpdateUserHandler implements IHandler{
 
     private checkData(jsonData: string) {
         const data = JSON.parse(jsonData);
+        const fields = ['date'];
         let state = true;
-        state = state && data['access_id'];
-        state = state && (data['username'] || data['password'] || data['access_level']);
+        fields.forEach(field => {
+            state = state && (data[field] !== undefined);
+            if (!state) {
+                return false;
+            }
+        });
         return state;
     }
 }
 
-export const updateUserHandler = new UpdateUserHandler();
+export const currentRecordHandler = new CurrentRecordHandler();

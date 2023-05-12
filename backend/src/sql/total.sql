@@ -54,7 +54,8 @@ CREATE TABLE schedules (
 CREATE TABLE records (
     record_id SERIAL NOT NULL PRIMARY KEY,
     agreement_id INT NOT NULL,
-    registration_date DATE NOT NULL
+    registration_date DATE NOT NULL,
+    next_date DATE,
 );
 
 CREATE TABLE states (

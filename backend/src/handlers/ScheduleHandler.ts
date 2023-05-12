@@ -5,7 +5,7 @@ import { keyChecker } from "../modules/KeyChecker";
 import { v4 as uuidv4 } from 'uuid';
 import IHandler from "./IHandler";
 
-class UpdatePostHandler implements IHandler {
+class ScheduleHandler implements IHandler {
     async request(request: any, reply: any) {
         reply.headers('Content-Type', "application/json");
         let key = request.headers["Authorization"];
@@ -30,28 +30,28 @@ class UpdatePostHandler implements IHandler {
         }
 
         const data = JSON.parse(request.body);
-        if (!(data?.title && data?.salary && data?.post_id)) {
+        if (!(data?.staff_id)) {
             reply.code(statuses.INVALID_ARGS);
         }
-        const response = await this.putRequest(data.title, data.salary, data.post_id);
-        if (response) {
-            reply.code(statuses.SUCCESS);
+
+        const response = await this.getRequest(data.staff_id);
+        if (response.length) {
+            reply.code(statuses.SUCCESS).send(JSON.stringify(response));
         } else {
             reply.code(statuses.SERVER_ERROR);
         }
     }
 
-    private async putRequest(title: string, salary: number, post_id: number): Promise<boolean> {
+    private async getRequest(staff_id: number) {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
-        let result = false;
+        let result: any = {};
         try {
-            await connection.none({
-                text: 'UPDATE posts SET title=$1, salary=$2 WHERE post_id=$3',
-                values: [title, salary, post_id]
+            const response = await connection.many({
+                text: 'SELECT week_day, workstart, workend, office FROM schedules s WHERE s.staff_id=$1',
+                values: [staff_id]
             });
-            result = true;
-
+            result = response;
         } catch (e) {
             logger.error(e);
         }
@@ -60,4 +60,4 @@ class UpdatePostHandler implements IHandler {
     }
 }
 
-export const updatePostHandler = new UpdatePostHandler();
+export const scheduleHandler = new ScheduleHandler();

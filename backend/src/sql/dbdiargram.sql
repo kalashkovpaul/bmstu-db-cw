@@ -45,7 +45,8 @@ TABLE schedules{
 TABLE records{
   record_id SERIAL [PRIMARY KEY]
   agreement_id INT
-  registration_date DATE
+  record_date DATE
+  next_date DATE
 }
 
 TABLE states{
@@ -120,3 +121,5 @@ Ref: schedules.staff_id > staff.staff_id
 Ref: agreements.patient_id - patients.patient_id
 
 Ref: accesses.staff_id - staff.staff_id
+
+Ref: records.agreement_id - agreements.agreement_id

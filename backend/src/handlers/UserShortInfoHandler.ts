@@ -9,25 +9,25 @@ class UserShortInfoHandler implements IHandler {
     async request(request: any, reply: any) {
         reply.headers('Content-Type', "application/json");
         let key = request.headers["Authorization"];
-        // if (!key) {
-        //     logger.error(`key: ${key}`);
-        //     reply.code(statuses.UNAUTHORIZED);
-        //     return;
-        // }
-        // const explicityKey = "Explicit: ";
-        // const index = key.indexOf(explicityKey);
-        // if (index === -1) {
-        //     logger.error(`index: ${index}, key: ${key}`);
-        //     reply.code(statuses.UNAUTHORIZED);
-        //     return;
-        // }
-        // key = key.slice(explicityKey.length);
-        // const staffId = keyChecker.getOwner(key);
-        // if (staffId === -1) {
-        //     logger.error(`staffId: ${staffId}, key: ${key}`);
-        //     reply.code(statuses.UNAUTHORIZED);
-        //     return;
-        // }
+        if (!key) {
+            logger.error(`key: ${key}`);
+            reply.code(statuses.UNAUTHORIZED);
+            return;
+        }
+        const explicityKey = "Explicit: ";
+        const index = key.indexOf(explicityKey);
+        if (index === -1) {
+            logger.error(`index: ${index}, key: ${key}`);
+            reply.code(statuses.UNAUTHORIZED);
+            return;
+        }
+        key = key.slice(explicityKey.length);
+        const staffId = keyChecker.getOwner(key);
+        if (staffId === -1) {
+            logger.error(`staffId: ${staffId}, key: ${key}`);
+            reply.code(statuses.UNAUTHORIZED);
+            return;
+        }
 
         const response = await this.getRequest();
         if (response.length) {
