@@ -15,7 +15,7 @@ class KeyChecker {
         if (this.data.get(key)) {
             return false;
         }
-        this.data.set(key, Date.now());
+        this.data.set(key, owner);
         return true;
     }
 

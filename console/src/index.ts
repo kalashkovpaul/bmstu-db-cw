@@ -89,17 +89,29 @@ const newRecord = JSON.stringify({
 });
 
 export async function checkAuthHandler() {
-    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.recordFull}`;
+    const authUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.postAuth}`;
+    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.agreement}/2`;
     try {
-        const response = await fetch(checkRightsUrl, {
+        let response = await fetch(authUrl, {
             method: "POST",
             mode: 'no-cors',
             body: JSON.stringify({
-                record_id: 1
+                username: 'admin',
+                password: 'qwerty'
             }),
         });
+        let result = await response.json();
+        const password = result.password;
+        console.log("Got password: ", password);
+        response = await fetch(checkRightsUrl, {
+            method: "GET",
+            mode: 'no-cors',
+            headers: {
+                'Authorization': `Explicit: ${password}`,
+            }
+        });
         console.log(response);
-        const result = await response.json();
+        result = await response.json();
         console.log(result);
     } catch (e) {
         console.log(e);

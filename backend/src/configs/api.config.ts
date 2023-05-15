@@ -22,6 +22,5 @@ export const apiConfig = {
     currentRecords: "/records/current", // DONE
     shortRecords: "/records/all/short", // DONE
     recordFull: "/record/full", // DONE
-    photoHandler: "/image",
-    agreement: "/agreement",
+    agreement: "/agreement/:id",
 }

@@ -25,6 +25,7 @@ class AuthHandler implements IHandler {
         const key = uuidv4();
         response.password = key;
         response.schedule = await this.getSchedule(response.staff.staff_id);
+        keyChecker.registerKey(key, response.staff.staff_id);
         reply.code(statuses.SUCCESS).send(JSON.stringify(response));
     }
 

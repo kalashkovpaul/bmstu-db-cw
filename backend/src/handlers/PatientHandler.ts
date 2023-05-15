@@ -7,7 +7,7 @@ import IHandler from "./IHandler";
 
 class PatientHandler implements IHandler {
     async request(request: any, reply: any) {
-        let key = request.headers["Authorization"];
+        let key = request.headers["authorization"];
         if (!key) {
             logger.error(`key: ${key}`);
             reply.code(statuses.UNAUTHORIZED);

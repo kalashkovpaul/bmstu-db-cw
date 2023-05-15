@@ -21,6 +21,7 @@ import { newRecordHandler } from '../handlers/NewRecordHandler';
 import { currentRecordHandler } from '../handlers/CurrentRecordHandler';
 import { recordShortInfoHandler } from '../handlers/RecordShortInfoHandler';
 import { recordFullInfoHandler } from '../handlers/RecordFullInfoHandler';
+import { agreementHandler } from '../handlers/AgreementHandler';
 
 export class API {
     private api: FastifyInstance;
@@ -50,6 +51,7 @@ export class API {
         this.api.post(apiConfig.currentRecords, currentRecordHandler.request.bind(currentRecordHandler));
         this.api.get(apiConfig.shortRecords, recordShortInfoHandler.request.bind(recordShortInfoHandler));
         this.api.post(apiConfig.recordFull, recordFullInfoHandler.request.bind(recordFullInfoHandler));
+        this.api.get(apiConfig.agreement, agreementHandler.request.bind(agreementHandler));
     }
 
     startServer = async () => {

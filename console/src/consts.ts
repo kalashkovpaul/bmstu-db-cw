@@ -42,6 +42,7 @@ export const apiConfig = {
     currentRecords: "/records/current",
     shortRecords: "/records/all/short",
     recordFull: "/record/full",
+    agreement: "/agreement",
 }
 
 export const statuses = {

@@ -8,7 +8,7 @@ import IHandler from "./IHandler";
 class CurrentRecordHandler implements IHandler{
     async request(request: any, reply: any) {
         reply.headers('Content-Type', "application/json");
-        let key = request.headers["Authorization"];
+        let key = request.headers["authorization"];
         if (!key) {
             logger.error(`key: ${key}`);
             reply.code(statuses.UNAUTHORIZED);
