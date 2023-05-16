@@ -7,7 +7,7 @@ const logger = createLogger({
     format: format.combine(
         format.timestamp({format: () => {
             return new Date().toLocaleString('en-US', {
-                timeZone: 'Moscow'
+                timeZone: 'UTC'
             });
         }}),
         format.colorize(),

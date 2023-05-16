@@ -1,7 +1,7 @@
-import { API, api } from "./api";
+import { Server, api } from "./server";
 
 export default class App {
-    private api: API;
+    private api: Server;
 
     constructor() {
         this.api = api;

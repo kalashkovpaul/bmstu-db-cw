@@ -1,32 +1,13 @@
 import { statuses } from "../consts";
 import logger from "../logger";
 import { connectManager } from "../modules/ConnectManager";
-import { keyChecker } from "../modules/KeyChecker";
 import { v4 as uuidv4 } from 'uuid';
-import IHandler from "./IHandler";
+import BaseHandler from "./BaseHandler";
 
-class PatientInfoHandler implements IHandler {
+class PatientInfoHandler extends BaseHandler {
     async request(request: any, reply: any) {
-        let key = request.headers["authorization"];
-        if (!key) {
-            logger.error(`key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
-        const explicityKey = "Explicit: ";
-        const index = key.indexOf(explicityKey);
-        if (index === -1) {
-            logger.error(`index: ${index}, key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
-        key = key.slice(explicityKey.length);
-        const staffId = keyChecker.getOwner(key);
-        if (staffId === -1) {
-            logger.error(`staffId: ${staffId}, key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
+        const staffId = await super.callMiddleware(request, reply);
+        if (staffId === 0) {return true}
 
         if (request.method === "GET") {
             const id = request.params;
@@ -47,6 +28,7 @@ class PatientInfoHandler implements IHandler {
                 reply.code(statuses.SERVER_ERROR);
             }
         }
+        return false;
     }
 
     private async getRequest(id: number): Promise<string> {

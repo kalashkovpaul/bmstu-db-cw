@@ -90,7 +90,7 @@ const newRecord = JSON.stringify({
 
 export async function checkAuthHandler() {
     const authUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.postAuth}`;
-    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.agreement}/2`;
+    const checkRightsUrl = `http://${apiConfig.url}:${apiConfig.port}${apiConfig.agreement}/1`;
     try {
         let response = await fetch(authUrl, {
             method: "POST",

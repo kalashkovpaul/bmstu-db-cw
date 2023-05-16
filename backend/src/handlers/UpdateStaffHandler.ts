@@ -1,38 +1,19 @@
 import { statuses } from "../consts";
 import logger from "../logger";
 import { connectManager } from "../modules/ConnectManager";
-import { keyChecker } from "../modules/KeyChecker";
 import { v4 as uuidv4 } from 'uuid';
-import IHandler from "./IHandler";
+import BaseHandler from "./BaseHandler";
 
-class UpdateStaffHandler implements IHandler {
+class UpdateStaffHandler extends BaseHandler {
     async request(request: any, reply: any) {
+        const staffId = await super.callMiddleware(request, reply);
+        if (staffId === 0) {return true}
         reply.headers('Content-Type', "application/json");
-        let key = request.headers["authorization"];
-        if (!key) {
-            logger.error(`key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
-        const explicityKey = "Explicit: ";
-        const index = key.indexOf(explicityKey);
-        if (index === -1) {
-            logger.error(`index: ${index}, key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
-        key = key.slice(explicityKey.length);
-        const staffId = keyChecker.getOwner(key);
-        if (staffId === -1) {
-            logger.error(`staffId: ${staffId}, key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
 
         if (!this.checkData(request.body)) {
             logger.error(`body: ${request.body}`);
             reply.code(statuses.INVALID_ARGS);
-            return;
+            return true;
         }
 
         const data = JSON.parse(request.body);
@@ -49,6 +30,7 @@ class UpdateStaffHandler implements IHandler {
         } else {
             reply.code(statuses.SUCCESS);
         }
+        return false;
     }
 
     private async updatePassport(jsonData: string): Promise<boolean> {

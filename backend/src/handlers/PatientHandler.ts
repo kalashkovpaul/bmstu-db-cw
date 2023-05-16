@@ -1,35 +1,16 @@
 import { statuses } from "../consts";
 import logger from "../logger";
 import { connectManager } from "../modules/ConnectManager";
-import { keyChecker } from "../modules/KeyChecker";
 import { v4 as uuidv4 } from 'uuid';
-import IHandler from "./IHandler";
+import BaseHandler from "./BaseHandler";
 
-class PatientHandler implements IHandler {
+class PatientHandler extends BaseHandler {
     async request(request: any, reply: any) {
-        let key = request.headers["authorization"];
-        if (!key) {
-            logger.error(`key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
-        const explicityKey = "Explicit: ";
-        const index = key.indexOf(explicityKey);
-        if (index === -1) {
-            logger.error(`index: ${index}, key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
-        key = key.slice(explicityKey.length);
-        const staffId = keyChecker.getOwner(key);
-        if (staffId === -1) {
-            logger.error(`staffId: ${staffId}, key: ${key}`);
-            reply.code(statuses.UNAUTHORIZED);
-            return;
-        }
-
+        const staffId = await super.callMiddleware(request, reply);
+        if (staffId === 0) {return true}
         const response = await this.putRequest(request.data);
         reply.code(statuses.SUCCESS).send(JSON.stringify(response));
+        return false;
     }
 
     private async putRequest(jsonData: any): Promise<boolean> {

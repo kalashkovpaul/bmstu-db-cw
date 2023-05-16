@@ -23,7 +23,7 @@ import { recordShortInfoHandler } from '../handlers/RecordShortInfoHandler';
 import { recordFullInfoHandler } from '../handlers/RecordFullInfoHandler';
 import { agreementHandler } from '../handlers/AgreementHandler';
 
-export class API {
+export class Server {
     private api: FastifyInstance;
 
     constructor() {
@@ -74,4 +74,4 @@ export class API {
     }
 }
 
-export const api = new API();
+export const api = new Server();

@@ -1,14 +1,8 @@
 class KeyChecker {
     private data: Map<string, number>;
-    private ttl: number;
 
     constructor() {
         this.data = new Map();
-        this.ttl = -1;
-    }
-
-    setMaxTTLKey(ttl: number): void {
-        this.ttl = ttl;
     }
 
     registerKey(key: string, owner: number): boolean {

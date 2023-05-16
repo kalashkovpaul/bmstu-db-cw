@@ -11,7 +11,7 @@ class AuthHandler implements IHandler {
             const key = request.headers.get("Authorization");
             keyChecker.removeKey(key);
             reply.code(statuses.SUCCESS);
-            return;
+            return true;
         }
         const authData = JSON.parse(request.body);
         reply.headers('Content-Type', "application/json");
@@ -27,6 +27,7 @@ class AuthHandler implements IHandler {
         response.schedule = await this.getSchedule(response.staff.staff_id);
         keyChecker.registerKey(key, response.staff.staff_id);
         reply.code(statuses.SUCCESS).send(JSON.stringify(response));
+        return false;
     }
 
     private async checkAuthData(username: string, password: string) {
