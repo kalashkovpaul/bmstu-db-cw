@@ -13,7 +13,7 @@ class AddPostHandler extends BaseHandler {
         if (!(data?.title && data?.salary)) {
             reply.code(statuses.INVALID_ARGS);
         }
-        const post_id = await this.postRequest(data.title, data.salary);
+        const post_id = await this.postRequest(staffId, data.title, data.salary);
         if (post_id === -1) {
             reply.code(statuses.SERVER_ERROR);
         } else {
@@ -22,9 +22,10 @@ class AddPostHandler extends BaseHandler {
         return false;
     }
 
-    private async postRequest(title: string, salary: number) {
+    private async postRequest(staffId: number, title: string, salary: number) {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = -1;
         try {
             const post_id = (await connection.one({

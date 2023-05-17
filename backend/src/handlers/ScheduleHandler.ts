@@ -15,7 +15,7 @@ class ScheduleHandler extends BaseHandler {
             reply.code(statuses.INVALID_ARGS);
         }
 
-        const response = await this.getRequest(data.staff_id);
+        const response = await this.getRequest(staffId, data.staff_id);
         if (response.length) {
             reply.code(statuses.SUCCESS).send(JSON.stringify(response));
         } else {
@@ -24,9 +24,10 @@ class ScheduleHandler extends BaseHandler {
         return false;
     }
 
-    private async getRequest(staff_id: number) {
+    private async getRequest(staffId: number, staff_id: number) {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result: any = {};
         try {
             const response = await connection.many({

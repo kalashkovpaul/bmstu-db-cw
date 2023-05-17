@@ -17,7 +17,7 @@ class DismissStaffHandler extends BaseHandler {
         }
 
         let result = false;
-        result = await this.updateStaff(request.body);
+        result = await this.updateStaff(staffId, request.body);
         if (!result) {
             reply.code(statuses.SERVER_ERROR);
         } else {
@@ -26,10 +26,11 @@ class DismissStaffHandler extends BaseHandler {
         return false;
     }
 
-    private async updateStaff(jsonData: string) {
+    private async updateStaff(staffId: number, jsonData: string) {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.tx(async (t: any) => {

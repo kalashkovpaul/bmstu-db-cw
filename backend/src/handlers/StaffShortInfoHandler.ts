@@ -10,7 +10,7 @@ class StaffShortInfoHandler extends BaseHandler {
         if (staffId === 0) {return true}
         reply.headers('Content-Type', "application/json");
 
-        const response = await this.getRequest();
+        const response = await this.getRequest(staffId);
         if (response.length) {
             reply.code(statuses.SUCCESS).send(JSON.stringify(response));
         } else {
@@ -19,9 +19,10 @@ class StaffShortInfoHandler extends BaseHandler {
         return false;
     }
 
-    private async getRequest() {
+    private async getRequest(staffId: number) {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result: any = {};
         try {
             const response = await connection.many({

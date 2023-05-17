@@ -94,7 +94,6 @@ class AddStaffHandler extends BaseHandler{
             scheduleFields.forEach(field => {
                 state = state && (sched[field] !== undefined);
                 if (!state) {
-                    console.log(field);
                     return false;
                 }
             });

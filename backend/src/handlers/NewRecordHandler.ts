@@ -15,7 +15,7 @@ class NewRecordHandler extends BaseHandler {
             reply.code(statuses.INVALID_ARGS);
             return true;
         }
-        const response = await this.putRequest(request.body);
+        const response = await this.putRequest(staffId, request.body);
         if (response) {
             reply.code(statuses.SUCCESS);
         } else {
@@ -24,10 +24,11 @@ class NewRecordHandler extends BaseHandler {
         return false;
     }
 
-    private async putRequest(jsonData: string): Promise<boolean> {
+    private async putRequest(staffId: number, jsonData: string): Promise<boolean> {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.tx(async (t: any) => {

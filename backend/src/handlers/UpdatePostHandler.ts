@@ -14,7 +14,7 @@ class UpdatePostHandler extends BaseHandler {
         if (!(data?.title && data?.salary && data?.post_id)) {
             reply.code(statuses.INVALID_ARGS);
         }
-        const response = await this.putRequest(data.title, data.salary, data.post_id);
+        const response = await this.putRequest(staffId, data.title, data.salary, data.post_id);
         if (response) {
             reply.code(statuses.SUCCESS);
         } else {
@@ -23,9 +23,10 @@ class UpdatePostHandler extends BaseHandler {
         return false;
     }
 
-    private async putRequest(title: string, salary: number, post_id: number): Promise<boolean> {
+    private async putRequest(staffId: number, title: string, salary: number, post_id: number): Promise<boolean> {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.none({

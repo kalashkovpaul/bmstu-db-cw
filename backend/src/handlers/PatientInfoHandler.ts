@@ -11,17 +11,17 @@ class PatientInfoHandler extends BaseHandler {
 
         if (request.method === "GET") {
             const id = request.params;
-            const response = await this.getRequest(id);
+            const response = await this.getRequest(staffId, id);
             reply.code(statuses.SUCCESS).send(response);
         } else if (request.method === "PUT") {
-            const response = await this.putRequest(request.data);
+            const response = await this.putRequest(staffId, request.data);
             if (response) {
                 reply.code(statuses.SUCCESS);
             } else {
                 reply.code(statuses.SERVER_ERROR);
             }
         } else if (request.method === "POST") {
-            const response = await this.postRequest(request.data);
+            const response = await this.postRequest(staffId, request.data);
             if (response) {
                 reply.code(statuses.SUCCESS);
             } else {
@@ -31,9 +31,10 @@ class PatientInfoHandler extends BaseHandler {
         return false;
     }
 
-    private async getRequest(id: number): Promise<string> {
+    private async getRequest(staffId: number, id: number): Promise<string> {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = "";
         try {
             const response = await connection.one({
@@ -49,10 +50,11 @@ class PatientInfoHandler extends BaseHandler {
         return result;
     }
 
-    private async putRequest(jsonData: any): Promise<boolean> {
+    private async putRequest(staffId: number, jsonData: any): Promise<boolean> {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.tx(async (t: any) => {
@@ -78,10 +80,11 @@ class PatientInfoHandler extends BaseHandler {
         return result;
     }
 
-    private async postRequest(jsonData: string) {
+    private async postRequest(staffId: number, jsonData: string) {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.tx(async (t: any) => {

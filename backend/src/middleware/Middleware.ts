@@ -34,7 +34,6 @@ class Middleware implements IMiddleware {
         let result = "";
         try {
             const response = await connection.proc('before_each_query', [staffId]);
-            console.log(response);
             result = response.access_level;
         } catch (e) {
             logger.error(e);

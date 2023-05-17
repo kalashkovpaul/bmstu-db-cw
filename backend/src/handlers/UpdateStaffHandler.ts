@@ -19,11 +19,11 @@ class UpdateStaffHandler extends BaseHandler {
         const data = JSON.parse(request.body);
         let result = false;
         if (data.type === 'passport') {
-            result = await this.updatePassport(request.body);
+            result = await this.updatePassport(staffId, request.body);
         } else if (data.type === 'staff') {
-            result = await this.updateStaff(request.body);
+            result = await this.updateStaff(staffId, request.body);
         } else if (data.type === 'schedule') {
-            result = await this.updateSchedule(request.body);
+            result = await this.updateSchedule(staffId, request.body);
         }
         if (!result) {
             reply.code(statuses.SERVER_ERROR);
@@ -33,9 +33,10 @@ class UpdateStaffHandler extends BaseHandler {
         return false;
     }
 
-    private async updatePassport(jsonData: string): Promise<boolean> {
+    private async updatePassport(staffId: number, jsonData: string): Promise<boolean> {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         const data = JSON.parse(jsonData);
         let result = false;
         try {
@@ -52,9 +53,10 @@ class UpdateStaffHandler extends BaseHandler {
         return result;
     }
 
-    private async updateStaff(jsonData: string): Promise<boolean> {
+    private async updateStaff(staffId: number, jsonData: string): Promise<boolean> {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         const data = JSON.parse(jsonData);
         let result = false;
         try {
@@ -71,10 +73,11 @@ class UpdateStaffHandler extends BaseHandler {
         return result;
     }
 
-    private async updateSchedule(jsonData: string) {
+    private async updateSchedule(staffId: number, jsonData: string) {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.tx(async (t: any) => {

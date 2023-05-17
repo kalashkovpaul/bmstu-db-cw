@@ -8,15 +8,16 @@ class PatientHandler extends BaseHandler {
     async request(request: any, reply: any) {
         const staffId = await super.callMiddleware(request, reply);
         if (staffId === 0) {return true}
-        const response = await this.putRequest(request.data);
+        const response = await this.putRequest(staffId, request.data);
         reply.code(statuses.SUCCESS).send(JSON.stringify(response));
         return false;
     }
 
-    private async putRequest(jsonData: any): Promise<boolean> {
+    private async putRequest(staffId: number, jsonData: any): Promise<boolean> {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.none({

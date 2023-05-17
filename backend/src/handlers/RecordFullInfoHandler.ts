@@ -20,7 +20,7 @@ class RecordFullInfoHandler extends BaseHandler {
         if (!(data?.title && data?.salary)) {
             reply.code(statuses.INVALID_ARGS);
         }
-        const result = await this.postRequest(request.body);
+        const result = await this.postRequest(staffId, request.body);
         if (!result.length) {
             reply.code(statuses.SERVER_ERROR);
         } else {
@@ -29,10 +29,11 @@ class RecordFullInfoHandler extends BaseHandler {
         return false;
     }
 
-    private async postRequest(jsonData: string) {
+    private async postRequest(staffId: number, jsonData: string) {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result: any = [];
         try {
             const response = await connection.many({

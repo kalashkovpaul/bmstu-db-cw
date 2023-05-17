@@ -17,7 +17,7 @@ class DeleteUserHandler extends BaseHandler {
 
         const data = JSON.parse(request.body);
         let result = false;
-        result = await this.postRequest(request.body);
+        result = await this.postRequest(staffId, request.body);
         if (!result) {
             reply.code(statuses.SERVER_ERROR);
         } else {
@@ -26,10 +26,11 @@ class DeleteUserHandler extends BaseHandler {
         return false;
     }
 
-    private async postRequest(jsonData: string) {
+    private async postRequest(staffId: number, jsonData: string) {
         const data = JSON.parse(jsonData);
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
+        this.middleware.setRole(staffId, connection);
         let result = false;
         try {
             await connection.tx(async (t: any) => {
