@@ -60,4 +60,11 @@ export default class Connection {
         }
         return null;
     }
+
+    async proc(params: any) {
+        if (this.state) {
+            return await this.connection.proc(params);
+        }
+        return null;
+    }
 }

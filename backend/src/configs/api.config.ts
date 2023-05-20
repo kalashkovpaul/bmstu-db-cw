@@ -1,6 +1,7 @@
 export const apiConfig = {
     port: 8004,
     url: "localhost",
+    getPatientFullInfo: "/patients/:id",
     patientFullInfo: "/patients", // DONE
     patientShortInfo: "/patients/all/short", // DONE
     postAuth: "/auth", // DONE

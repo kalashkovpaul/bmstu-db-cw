@@ -10,18 +10,19 @@ class PatientInfoHandler extends BaseHandler {
         if (staffId === 0) {return true}
 
         if (request.method === "GET") {
-            const id = request.params;
+            const id = request.params.id;
             const response = await this.getRequest(staffId, id);
+            reply.headers('Content-Type', "application/json");
             reply.code(statuses.SUCCESS).send(response);
         } else if (request.method === "PUT") {
-            const response = await this.putRequest(staffId, request.data);
+            const response = await this.putRequest(staffId, request.body);
             if (response) {
                 reply.code(statuses.SUCCESS);
             } else {
                 reply.code(statuses.SERVER_ERROR);
             }
         } else if (request.method === "POST") {
-            const response = await this.postRequest(staffId, request.data);
+            const response = await this.postRequest(staffId, request.body);
             if (response) {
                 reply.code(statuses.SUCCESS);
             } else {
@@ -38,11 +39,10 @@ class PatientInfoHandler extends BaseHandler {
         let result = "";
         try {
             const response = await connection.one({
-                text: 'SELECT * FROM patients LEFT JOIN passports ON passport=passport_id LEFT JOIN addresses ON address_id=address_id WHERE patient_id=$1',
+                text: 'SELECT * FROM patients LEFT JOIN passports ON passport=passport_id LEFT JOIN addresses ON addresses.address_id=patients.address_id WHERE patient_id=$1',
                 values: [id]
             });
-            result =  JSON.stringify(response);
-
+            result = JSON.stringify(response);
         } catch (e) {
             logger.error(e);
         }
@@ -94,11 +94,11 @@ class PatientInfoHandler extends BaseHandler {
                 })).address_id;
                 const passport_id = (await connection.one({
                     text: 'INSERT INTO passports (surname, middlename, lastname, birth_date, gender, series, num, issue_date, issue_location) VALUES ($1, $2, $3, $4::date, $5, $6, $7, $8::date, $9) RETURNING passport_id;',
-                    values: [data.passport.surname, data.passport.middlename, data.passport.lastname, data.passport.birth_date, data.passport.gender, data.passport.series, data.passport.num, data.passport.issue_date, data.passport.issue_location, data.passport.passport_id],
+                    values: [data.passport.surname, data.passport.middlename, data.passport.lastname, data.passport.birth_date, data.passport.gender, data.passport.series, data.passport.num, data.passport.issue_date, data.passport.issue_location],
                 })).passport_id;
                 await connection.none({
-                    text: 'INSERT INTO patients SET (address_id, passport, phone, home_phone, email) VALUES ($1, $2, $3, $4, $5);',
-                    values: [address_id, passport_id, data.phone, data.home_phone ? data.home_phone : "NULL", data.email ? data.email : "NULL", data.patient_id]
+                    text: 'INSERT INTO patients (address_id, passport, phone, home_phone, email) VALUES ($1, $2, $3, $4, $5);',
+                    values: [address_id, passport_id, data.phone, data.home_phone ? data.home_phone : "NULL", data.email ? data.email : "NULL"]
                 });
             });
             result = true;

@@ -22,6 +22,7 @@ export const EXIT_CHOICE  = "0";
 export const apiConfig = {
     port: 8004,
     url: "localhost",
+    patientFullInfo: "/patients",
     postAuth: "/auth",
     patientShortInfo: "/patients/all/short",
     addPost: "/post/add",

@@ -495,11 +495,136 @@
 	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/constraints3.sql}
 \end{code}
 
+\subsubsection{Создание ролевой модели и управление доступами}
+
+На основе приведённой выше Use-Case диаграммы создадим роли и распределим доступы к таблицам.
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание ролей}
+	\label{code:roles1}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles1.sql}
+\end{code}
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Распределение доступов между ролями (часть 1)}
+	\label{code:roles2}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles2.sql}
+\end{code}
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Распределение доступов между ролями (часть 2)}
+	\label{code:roles3}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles3.sql}
+\end{code}
+
+Для управления доступами для конкретных соединений была использована технология политики RLS (\textit{англ.} Row Level Security Polices) и процедура, приведённая на листингах \ref{code:roles4} -- \ref{code:roles6}.
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Управление доступами при помощи RLS (часть 1)}
+	\label{code:roles4}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles4.sql}
+\end{code}
+\clearpage
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Управление доступами при помощи RLS (часть 2)}
+	\label{code:roles5}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles5.sql}
+\end{code}
+\clearpage
+
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Управление доступами при помощи RLS (часть 3)}
+	\label{code:roles6}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles6.sql}
+\end{code}
+
+
 \subsubsection{Диаграмма базы данных}
 
 По полученным выше таблицам, отображающим свойства столбцов таблиц базы данных, построим диаграмму базы данных (\textit{англ. database schema}) при помощи языка разметки баз данных (\textit{англ.} Database Markup Language, DML), предназначенного для представления данных и информации о таблицах, взятых из реляционной базы данных,
 
 Диаграмма базы данных для поставленной задачи отображена на рисунке~\ref{fig:dbdiagram}.
+
+\clearpage
 
 \begin{figure}[h!]
 	\centering
@@ -523,6 +648,7 @@ MVC (\textit{англ.} Model View Controller)~\cite{mvc} --- архитекту
 Представление определяет собой отображение модели, и, как правило, получает состояние и данные для отображения непосредственно от модели. 
 
 Контроллер получает данные, вводимые пользователем, определяет их смысл для модели, выполняет операции с моделью и управляет её бизнес-логикой, связывая с представлением.
+\clearpage
 
 Упрощённо можно привести следующие этапы работы приложения, к которым может привести взаимодействие с пользователем:
 \begin{enumerate}[label=\arabic*)]
@@ -549,7 +675,19 @@ REST (\textit{англ.} Representational State Transfer, передача ре�
 	\item достаточное количество информации в каждом запросе: каждый отдельно взятый запрос содержит информацию, однозрачно определяющее то, как необходимо обрабатывать и идентифицировать данный запрос.
 \end{enumerate}
 
+\subsection{Диаграмма классов приложения}
+
+Приложение строится согласно диаграмме классов, приведённой на рисунке \ref{fig:uml}.
+
+\begin{figure}[h!]
+	\centering
+	\captionsetup{justification=centering}
+	\includegraphics[width=170mm]{uml.png}
+	\caption{Диаграмма классов}
+	\label{fig:uml}
+\end{figure}
+
 \subsection*{Вывод}
 
-В данном разделе  была рассмотрена спроектированная база данных, соответствующая выбранной в  аналитической части СУБД, приведена диаграмма базы данных, рассмотрены сценарии создания таблиц БД и основные используемые паттерны проектирования: MVC и REST.
+В данном разделе  была рассмотрена спроектированная база данных, соответствующая выбранной в  аналитической части СУБД, приведена диаграмма базы данных, рассмотрены сценарии создания таблиц БД и ролевой модели для управления доступом к таблицам, а также приведена диаграмма классов приложения и разобраны основные используемые паттерны проектирования: MVC и REST.
 

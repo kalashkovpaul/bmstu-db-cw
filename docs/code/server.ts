@@ -28,7 +28,7 @@ export class Server {
 
     constructor() {
         this.api = Fastify();
-        this.api.get(apiConfig.getPatientFullInfo, patientInfoHandler.request.bind(patientInfoHandler));
+        this.api.get(apiConfig.patientFullInfo, patientInfoHandler.request.bind(patientInfoHandler));
         this.api.put(apiConfig.patientFullInfo, patientInfoHandler.request.bind(patientInfoHandler));
         this.api.post(apiConfig.patientFullInfo, patientInfoHandler.request.bind(patientInfoHandler));
         this.api.post(apiConfig.postAuth, authHandler.request.bind(authHandler));
