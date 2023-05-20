@@ -8,7 +8,7 @@ class PatientHandler extends BaseHandler {
     async request(request: any, reply: any) {
         const staffId = await super.callMiddleware(request, reply);
         if (staffId === 0) {return true}
-        const response = await this.putRequest(staffId, request.data);
+        const response = await this.putRequest(staffId, request.body);
         reply.code(statuses.SUCCESS).send(JSON.stringify(response));
         return false;
     }

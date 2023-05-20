@@ -10,12 +10,12 @@ class ScheduleHandler extends BaseHandler {
         if (staffId === 0) {return true}
         reply.headers('Content-Type', "application/json");
 
-        const data = JSON.parse(request.body);
-        if (!(data?.staff_id)) {
+        const id = request.params.id;
+        if (!id) {
             reply.code(statuses.INVALID_ARGS);
         }
 
-        const response = await this.getRequest(staffId, data.staff_id);
+        const response = await this.getRequest(staffId, id);
         if (response.length) {
             reply.code(statuses.SUCCESS).send(JSON.stringify(response));
         } else {

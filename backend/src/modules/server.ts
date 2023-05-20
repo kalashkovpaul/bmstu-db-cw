@@ -32,7 +32,7 @@ export class Server {
         this.api.put(apiConfig.patientFullInfo, patientInfoHandler.request.bind(patientInfoHandler));
         this.api.post(apiConfig.patientFullInfo, patientInfoHandler.request.bind(patientInfoHandler));
         this.api.post(apiConfig.postAuth, authHandler.request.bind(authHandler));
-        this.api.get(apiConfig.patientShortInfo, patientHandler.request.bind(patientHandler));
+        this.api.put(apiConfig.patientShortInfo, patientHandler.request.bind(patientHandler));
         this.api.post(apiConfig.addPost, addPostHandler.request.bind(addPostHandler));
         this.api.get(apiConfig.allPosts, allPostsHandler.request.bind(allPostsHandler));
         this.api.put(apiConfig.updatePost, updatePostHandler.request.bind(updatePostHandler));
@@ -45,7 +45,7 @@ export class Server {
         this.api.post(apiConfig.updateUser, updateUserHandler.request.bind(updateUserHandler));
         this.api.post(apiConfig.deleteUser, deleteUserHandler.request.bind(deleteUserHandler));
         this.api.get(apiConfig.systemUsersList, userShortInfoHandler.request.bind(userShortInfoHandler));
-        this.api.post(apiConfig.postSchedule, scheduleHandler.request.bind(scheduleHandler));
+        this.api.get(apiConfig.getSchedule, scheduleHandler.request.bind(scheduleHandler));
         this.api.get(apiConfig.allSchedules, allScheduleHandler.request.bind(allScheduleHandler));
         this.api.post(apiConfig.newRecord, newRecordHandler.request.bind(newRecordHandler));
         this.api.post(apiConfig.currentRecords, currentRecordHandler.request.bind(currentRecordHandler));

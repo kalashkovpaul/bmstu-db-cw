@@ -106,7 +106,11 @@ class UpdateStaffHandler extends BaseHandler {
         const staffFields = ['staff_id', 'post'];
         const scheduleFields = ['week_day', 'workstart', 'workend', 'office'];
         let state = true;
-        if (!data['type'] || !(data.type === 'passport' || data.type === 'staff' || data.type === 'schedule')) return false;
+        console.log("HERE");
+        if (!data['type'] || !(data.type === 'passport' || data.type === 'staff' || data.type === 'schedule')) {
+            console.log(data.type);
+            return false;
+        }
         if (data.type === 'passport') {
             passportFields.forEach(field => {
                 state = state && data[field];

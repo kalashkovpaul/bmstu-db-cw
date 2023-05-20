@@ -17,7 +17,7 @@ export const apiConfig = {
     updateUser: "/users/update", // DONE
     deleteUser: "/users/delete", // DONE
     systemUsersList: "/users/all/short", // DONE
-    postSchedule: "/schedule", // DONE
+    getSchedule: "/schedule/:id", // DONE
     allSchedules: "/schedules/all", // DONE
     newRecord: "/records/new", // DONE
     currentRecords: "/records/current", // DONE

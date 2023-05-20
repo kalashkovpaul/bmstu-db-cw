@@ -25,7 +25,6 @@ class AgreementHandler extends BaseHandler {
         const connName = uuidv4();
         const connection = connectManager.connect(connName);
         this.middleware.setRole(staffId, connection);
-        this.middleware.setRole(staffId, connection);
         let result: any = {};
         try {
             const response = await connection.one({
