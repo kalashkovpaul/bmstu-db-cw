@@ -1,0 +1,34 @@
+{
+  "name": "research",
+  "version": "1.0.0",
+  "description": "Data generator and time research",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "@types/filesystem": "0.0.32",
+    "@types/isomorphic-fetch": "0.0.36",
+    "fs": "0.0.1-security",
+    "isomorphic-fetch": "^3.0.0",
+    "pg-promise": "^11.4.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.3"
+  },
+  "scripts": {
+    "generate": "ts-node-esm generate.ts",
+    "measure": "ts-node-esm measure.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalashkovpaul/bmstu-db-cw.git"
+  },
+  "author": "Paul Kalashkov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kalashkovpaul/bmstu-db-cw/issues"
+  },
+  "homepage": "https://github.com/kalashkovpaul/bmstu-db-cw#readme"
+}
