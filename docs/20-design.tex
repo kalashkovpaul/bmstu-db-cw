@@ -384,6 +384,43 @@
 Врач будет иметь доступ на все действия для таблиц записей, состояний и приёмов, доступы на чтение для таблиц пациентов и других врачей, а также доступ на чтение и обновление для таблицы расписаний.
 Сотрудник регистратуры будет иметь доступы на все действия для таблиц приёмов, расписаний, пациентов и паспортов, а также доступы на чтение в таблицы сотрудников и медицинских карт.
 
+\subsection{Описание организации целостности}
+
+\begin{table}[H]
+\begin{center}
+	\captionsetup{justification=raggedright,singlelinecheck=off,margin=5mm}
+	\caption{Информация об организации целостности таблиц}
+	\begin{tabular}{| c | c | c | c | c |}
+		\hline
+		Таблица & Столбец & Таблица & Столбец & Тип связи \\
+		\hline
+		states & state\_id & sessions & state\_id & 1 --- 1\\
+		\hline
+		records & record\_id & sessions & record\_id & 1 --- N \\
+		\hline
+		records &  agreement\_id & agreements & agreemet\_id & 1 --- 1 \\
+		\hline
+		patients & patient\_id & sessions & patient\_id & 1 --- N \\
+		\hline
+		patients & patient\_id & agreements & patient\_id & 1 --- 1\\
+		\hline
+		patients & patient\_id & addresses & address\_id & 1 --- 1 \\
+		\hline
+		patients & passport & passports & passport\_id & 1 ---1 \\ \hline
+		staff & staff\_id & sessions & session\_id & 1 --- N \\
+		\hline
+		staff  & staff\_id & accesses & access\_id & 1 --- 1\\
+		\hline
+		staff  & staff\_id & schedules & staff\_id & 1 --- N\\
+		\hline
+		staff & passport & passports & passport\_id & 1 --- 1 \\
+		\hline
+		staff & post & posts & post\_id & 1 --- 1 \\ \hline
+	\end{tabular}
+	\label{table:passports-columns}
+\end{center}
+\end{table}
+
 \subsection*{Вывод}
 
 В данном разделе  была рассмотрена спроектированная база данных, соответствующая выбранной в  аналитической части СУБД, приведена диаграмма базы данных, а также рассмотрены сценарии создания таблиц БД и ролевой модели для управления доступом к таблицам.
