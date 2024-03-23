@@ -8,3 +8,10 @@ export const statuses = {
 }
 
 export const masterChain = "1234567890";
+
+export enum access_level {
+    admin,
+    chief,
+    doctor,
+    registry
+}

@@ -3,6 +3,7 @@ CREATE ROLE admin;
 CREATE ROLE chief;
 CREATE ROLE doctor;
 CREATE ROLE registry;
+CREATE ROLE superuser superuser;
 
 SET ROLE superuser;
 DROP OWNED BY admin;
@@ -75,6 +76,8 @@ CREATE POLICY users_delete_admin
     USING (true);
 
     DROP PROCEDURE IF EXISTS before_each_query(user_uuid int);
+
+    
 CREATE OR REPLACE PROCEDURE before_each_query(IN user_uuid int)
     LANGUAGE plpgsql
 AS

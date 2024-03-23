@@ -1,10 +1,12 @@
-import { statuses } from "../consts";
+import { access_level, statuses } from "../consts";
 import logger from "../logger";
 import { connectManager } from "../modules/ConnectManager";
 import { v4 as uuidv4 } from 'uuid';
 import BaseHandler from "./BaseHandler";
+import { prisma } from "../prisma";
+import { access_level_t } from "@prisma/client";
 
-class AddUserHandler extends BaseHandler{
+class AddUserORMHandler extends BaseHandler{
     async request(request: any, reply: any) {
         const startTime = performance.now();
         const staffId = await super.callMiddleware(request, reply);
@@ -27,7 +29,7 @@ class AddUserHandler extends BaseHandler{
         } else {
             reply.code(statuses.SUCCESS);
         }
-        logger.info(`1.1: ${performance.now() - startTime}`);
+        logger.info(`2.1: ${performance.now() - startTime}`);
 
         return false;
     }
@@ -40,13 +42,15 @@ class AddUserHandler extends BaseHandler{
         let result = false;
         try {
             const startTime = performance.now();
-            await connection.tx(async (t: any) => {
-                await t.none({
-                    text: 'INSERT INTO accesses (staff_id, username, passwordhash, access_level) VALUES ($1, $2, $3, $4)',
-                    values: [data.staff.staff_id, data.username, data.password, data.access_level],
-                });
+            const access = await prisma.accesses.create({
+                data: {
+                    staff_id: data.staff.staff_id,
+                    username: data.username,
+                    passwordhash: Buffer.from(data.password),
+                    access_level: data.access_level as access_level_t,
+                }
             });
-            logger.info(`1.2: ${performance.now() - startTime}`);
+            logger.info(`2.2: ${performance.now() - startTime}`);
             result = true;
         } catch (e) {
             logger.error(e);
@@ -78,4 +82,4 @@ class AddUserHandler extends BaseHandler{
     }
 }
 
-export const addUserHandler = new AddUserHandler();
+export const addUserORMHandler = new AddUserORMHandler();

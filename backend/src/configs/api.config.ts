@@ -14,6 +14,7 @@ export const apiConfig = {
     fullStaffInfo: "/staff/all/full", // DONE
     dismissStaff: "/staff/dismiss", // DONE
     addUser: "/users/add", // DONE
+    addUserORM: "/users/addorm", // DONE
     updateUser: "/users/update", // DONE
     deleteUser: "/users/delete", // DONE
     systemUsersList: "/users/all/short", // DONE

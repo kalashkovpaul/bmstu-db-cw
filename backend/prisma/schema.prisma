@@ -1,0 +1,27 @@
+datasource db {
+    provider = "postgresql"
+    url = "postgres://postgres:postgres@localhost:5432/postgres"
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+enum access_level_t {
+    admin
+    chief
+    doctor
+    registry
+}
+
+
+model accesses {
+    access_id Int @id @default(autoincrement())
+    staff_id Int
+    username String
+    passwordhash Bytes @db.ByteA
+    access_level access_level_t
+}
+
+

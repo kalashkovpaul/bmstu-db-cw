@@ -16,7 +16,7 @@ const dbConfig = {
     "password": "postgres",
     "url": "localhost",
     "port": "5432",
-    "db": "clinic",
+    "db": "postgres",
     "repeat": 3
 }
 

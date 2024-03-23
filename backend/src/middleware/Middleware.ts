@@ -33,10 +33,10 @@ class Middleware implements IMiddleware {
     async setRole(staffId: number, connection: any) {
         let result = "";
         try {
-            const response = await connection.proc('before_each_query', [staffId]);
+            const response = await connection.proc('"before_each_query"', [staffId]);
             result = response.access_level;
         } catch (e) {
-            logger.error(e);
+            logger.debug(e);
         }
         return result;
     }

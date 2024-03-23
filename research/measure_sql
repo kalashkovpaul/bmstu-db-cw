@@ -1,0 +1,6 @@
+#!/bin/bash
+count=100
+# psql -d postgres -U test -c "\timing on"
+for i in $(seq $count); do
+    psql -d postgres -U test -c "INSERT INTO accesses (staff_id, username, passwordhash, access_level) VALUES (1, 'user1', 'user1', 'doctor');"
+done >> sql_measurement.txt

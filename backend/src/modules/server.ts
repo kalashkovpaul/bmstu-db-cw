@@ -12,6 +12,7 @@ import { staffShortInfoHandler } from '../handlers/StaffShortInfoHandler';
 import { staffFullInfoHandler } from '../handlers/StaffFullInfoHandler';
 import { dismissStaffHandler } from '../handlers/DismissStaffHandler';
 import { addUserHandler } from '../handlers/AddUserHandler';
+import { addUserORMHandler } from '../handlers/AddUserORMHandler';
 import { updateUserHandler } from '../handlers/UpdateUserHandler';
 import { deleteUserHandler } from '../handlers/DeleteUserHandler';
 import { userShortInfoHandler } from '../handlers/UserShortInfoHandler';
@@ -42,6 +43,7 @@ export class Server {
         this.api.get(apiConfig.fullStaffInfo, staffFullInfoHandler.request.bind(staffFullInfoHandler));
         this.api.post(apiConfig.dismissStaff, dismissStaffHandler.request.bind(dismissStaffHandler));
         this.api.post(apiConfig.addUser, addUserHandler.request.bind(addUserHandler));
+        this.api.post(apiConfig.addUserORM, addUserORMHandler.request.bind(addUserORMHandler));
         this.api.post(apiConfig.updateUser, updateUserHandler.request.bind(updateUserHandler));
         this.api.post(apiConfig.deleteUser, deleteUserHandler.request.bind(deleteUserHandler));
         this.api.get(apiConfig.systemUsersList, userShortInfoHandler.request.bind(userShortInfoHandler));

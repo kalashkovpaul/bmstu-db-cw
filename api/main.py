@@ -196,6 +196,7 @@ def auth():
 
     r = requests.post(host + "/auth", data=json.dumps(data), headers=headers)
     body = r.json()
+    print(r, body)
     password = body["password"]
     return password
 
@@ -429,6 +430,22 @@ def addUser(staff_id: int, username: str, password: str, access_level: str):
     }
     password = auth()
     r = requests.post(host + "/users/add", data=json.dumps(data), headers={'Content-type':'text/plain','Authorization': 'Explicit: ' + password,})
+    print(r)
+    return r.json()
+
+@app.post("/users/addorm")
+def addUser(staff_id: int, username: str, password: str, access_level: str):
+    print(id)
+    data = {
+        "staff": {
+            "staff_id": staff_id,
+        },
+        "username": username,
+        "password": password,
+        "access_level": access_level,
+    }
+    password = auth()
+    r = requests.post(host + "/users/addorm", data=json.dumps(data), headers={'Content-type':'text/plain','Authorization': 'Explicit: ' + password,})
     print(r)
     return r.json()
 

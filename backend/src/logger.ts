@@ -18,6 +18,7 @@ const logger = createLogger({
     transports: [
         new transports.File({filename: logConfig.errorPath, level: "warn"}),
         new transports.File({filename: logConfig.infoPath}),
+        new transports.File({filename: logConfig.debugPath, level: "debug"}),
     ],
 });
 

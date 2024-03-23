@@ -41,16 +41,18 @@
 	xleftmargin=10pt,
 	]
 	{text}
-	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/usertypes.sql}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/usertypes.sql}
 \end{code}
 
+<<<<<<< Updated upstream
 На листинге \ref{code:createtables1} приведён пример скрипта создания таблицы пациентов (скрипты для создания остальных таблиц были созданы аналогично).
 \clearpage
 
+=======
 
 \begin{code}
 	\captionsetup{justification=centering}
-	\captionof{listing}{Создание таблицы пациентов}
+	\captionof{listing}{Создание таблиц (часть 1)}
 	\label{code:createtables1}
 	\inputminted
 	[
@@ -64,7 +66,103 @@
 	xleftmargin=10pt,
 	]
 	{text}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/createtables1.sql}
+\end{code}
+
+\clearpage
+
+\begin{figure}[H]
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание таблиц (часть 2)}
+	\label{code:createtables2}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/createtables2.sql}
+\end{code}
+\end{figure}
+
+\clearpage
+>>>>>>> Stashed changes
+
+\begin{code}
+	\captionsetup{justification=centering}
+<<<<<<< Updated upstream
+	\captionof{listing}{Создание таблицы пациентов}
+	\label{code:createtables1}
+=======
+	\captionof{listing}{Создание таблиц (часть 3)}
+	\label{code:createtables3}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/createtables3.sql}
+\end{code}
+\end{figure}
+
+\begin{figure}[H]
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание таблиц (часть 4)}
+	\label{code:createtables4}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/createtables4.sql}
+\end{code}
+\end{figure}
+
+\begin{figure}[H]
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание таблиц (часть 5)}
+	\label{code:createtables5}
+>>>>>>> Stashed changes
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+<<<<<<< Updated upstream
 	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/createtables1.sql}
+=======
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/createtables5.sql}
+>>>>>>> Stashed changes
 \end{code}
 %
 %\clearpage
@@ -173,7 +271,7 @@
 	xleftmargin=10pt,
 	]
 	{text}
-	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/constraints1.sql}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/constraints1.sql}
 \end{code}
 %
 %\clearpage
@@ -224,10 +322,61 @@
 
 \subsubsection{Создание ролевой модели и управление доступами}
 
+<<<<<<< Updated upstream
 На основе приведённой выше диаграммы вариантов использования создадим роли и распределим доступы к таблицам.
 
 \clearpage
 
+=======
+\begin{figure}[H]
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание ограничений для созданных таблиц (часть 2)}
+	\label{code:constraints2}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/constraints2.sql}
+\end{code}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[H]
+\begin{code}
+	\captionsetup{justification=centering}
+	\captionof{listing}{Создание ограничений для созданных таблиц (часть 3)}
+	\label{code:constraints3}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/constraints3.sql}
+\end{code}
+\end{figure}
+
+\subsubsection{Создание ролевой модели и управление доступами}
+
+На основе приведённой выше Use-Case диаграммы создадим роли и распределим доступы к таблицам.
+
+>>>>>>> Stashed changes
 \begin{code}
 	\captionsetup{justification=centering}
 	\captionof{listing}{Создание ролей}
@@ -244,7 +393,7 @@
 	xleftmargin=10pt,
 	]
 	{text}
-	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles1.sql}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/roles1.sql}
 \end{code}
 
 \begin{code}
@@ -263,7 +412,7 @@
 	xleftmargin=10pt,
 	]
 	{text}
-	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles2.sql}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/roles2.sql}
 \end{code}
 
 \begin{figure}[H]
@@ -283,7 +432,7 @@
 	xleftmargin=10pt,
 	]
 	{text}
-	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles3.sql}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/roles3.sql}
 \end{code}
 \end{figure}
 
@@ -305,7 +454,7 @@
 	xleftmargin=10pt,
 	]
 	{text}
-	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles4.sql}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/roles4.sql}
 \end{code}
 
 \begin{figure}[H]
@@ -325,7 +474,7 @@
 	xleftmargin=10pt,
 	]
 	{text}
-	{/Users/p.kalashkov/Desktop/sixthTerm/bmstu-db-cw/docs/code/roles5.sql}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/roles5.sql}
 \end{code}
 \end{figure}
 
@@ -467,9 +616,28 @@
 \begin{figure}[h]
 	\centering
 	\captionsetup{justification=centering}
+<<<<<<< Updated upstream
 	\includegraphics[width=170mm]{img/interface.png}
 	\caption{Интерфейс программы: методы API}
 	\label{fig:interface-1}
+=======
+	\captionof{listing}{Управление доступами при помощи RLS (часть 3)}
+	\label{code:roles6}
+	\inputminted
+	[
+	frame=single,
+	framerule=0.5pt,
+	framesep=20pt,
+	fontsize=\small,
+	tabsize=4,
+	linenos,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	]
+	{text}
+	{/home/paul/Desktop/reps/bmstu-db-cw/docs/code/roles6.sql}
+\end{code}
+>>>>>>> Stashed changes
 \end{figure}
 
 По нажатию на элемент каждого метода появляется подробное описание: какие данные метод принимает на вход, какие параметры являются обязательными, а какие опциональными, структуры какого вида возвращает и в каком виде, что возвращает в случае ошибки (рисунок \ref{fig:interface-2}).
